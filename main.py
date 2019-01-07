@@ -17,22 +17,24 @@ class Tir(Widget):
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
 
-    def Presence_cours(self, target):
-        if self.collide_widget(cours):
-            target.touch
+    def kill(self, target):
+        if self.collide_widget(target):
+            target.velocity_y *= 1.3
+            target.pos[1] = target.root.top
 
 class Eleve(Widget):
     score = NumericProperty(0)
 
 class TD(Widget):
     t = 0
-
-    def touch(self):
-        self.center_y: -self.parent.height*2
+    velocity_y = NumericProperty(1)
 
     def move(self):
-        self.t +=1/60
-        self.pos[0] = self.pos[0] + int(5*(0.5-np.sin(self.t)))
+        self.t+=1
+
+        self.pos[0] = int(self.pos[0]-(np.sin((self.t%60)/60)*np.pi)-0.5)
+        pass
+
 
 
 class TA(Widget):
@@ -76,6 +78,7 @@ class TopDownShooterGame(Widget):
 
     def update(self, dt):
         self.tir.move()
+        self.tir.kill(self.td)
         self.td.move()
 
 
