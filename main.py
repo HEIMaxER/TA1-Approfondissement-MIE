@@ -17,22 +17,27 @@ class Tir(Widget):
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
 
-    def kill(self, target):
+    def kill(self, target, eleve):
         if self.collide_widget(target):
-            target.velocity_y *= 1.3
-            target.pos[1] = target.root.top
+            target.velocity_y *= 1.05
+            eleve.score += target.value
+            target.pos[1]+= 300
 
-class Eleve(Widget):
+class Player(Widget):
     score = NumericProperty(0)
 
 class TD(Widget):
     t = 0
-    velocity_y = NumericProperty(1)
+    velocity_y = NumericProperty(0.03)
+    value =  100
+    real_y = 0
+
 
     def move(self):
         self.t+=1
-
-        self.pos[0] = int(self.pos[0]-(np.sin((self.t%60)/60)*np.pi)-0.5)
+        self.real_y = self.pos[1]-self.velocity_y
+        self.pos[1] = int(self.real_y)
+        self.pos[0] = self.pos[0]+int(10*(np.cos(((self.t%180)/180)*2*np.pi)))
         pass
 
 
@@ -49,7 +54,7 @@ class ControleContinu(Widget):
 class TopDownShooterGame(Widget):
 
     tir = ObjectProperty(None)
-    eleve = ObjectProperty(None)
+    player = ObjectProperty(None)
     td = ObjectProperty(None)
 
     def __init__(self, **kwargs):
@@ -64,21 +69,21 @@ class TopDownShooterGame(Widget):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
 
         if keycode[1] == 'd':
-            self.eleve.center_x += 10
+            self.player.center_x += 10
         elif keycode[1] == 'q':
-            self.eleve.center_x -= 10
+            self.player.center_x -= 10
         elif keycode[1] == 'right':
-            self.eleve.center_x += 10
+            self.player.center_x += 10
         elif keycode[1] == 'left':
-            self.eleve.center_x -= 10
+            self.player.center_x -= 10
         elif keycode[1] == 'spacebar':
-            self.tir.center_x = self.eleve.center_x
-            self.tir.center_y = self.eleve.center_y
+            self.tir.center_x = self.player.center_x
+            self.tir.center_y = self.player.center_y
         return True
 
     def update(self, dt):
         self.tir.move()
-        self.tir.kill(self.td)
+        self.tir.kill(self.td, self.player)
         self.td.move()
 
 

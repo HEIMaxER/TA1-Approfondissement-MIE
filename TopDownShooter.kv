@@ -7,7 +7,7 @@
             pos: self.pos
             size: self.size
 
-<Eleve>:
+<Player>:
 
     size : 30, 10
     canvas:
@@ -26,24 +26,24 @@
 <TopDownShooterGame>:
 
     tir: tir
-    eleve: eleve
+    player: player
     td: td
 
     Label:
         font_size: 20
         right: root.right - 5
         top: root.top - 3
-        text: "Score : "+str(eleve.score)
+        text: "Score : "+str(player.score)
 
-    Eleve:
-        id: eleve
+    Player:
+        id: player
 
         center_x: self.parent.center_x
 
     TD:
         id: td
         center_x: self.parent.center_x
-        center_y: self.parent.center_y
+        top: root.top
 
     Tir:
         id: tir
