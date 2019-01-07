@@ -5,6 +5,7 @@ from kivy.properties import NumericProperty, ReferenceListProperty, \
     ObjectProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
+import numpy as np
 import random as rd
 
 class Tir(Widget):
@@ -16,28 +17,41 @@ class Tir(Widget):
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
 
+    def Presence_cours(self, target):
+        if self.collide_widget(cours):
+            target.touch
+
 class Eleve(Widget):
     score = NumericProperty(0)
+
+class TD(Widget):
+    t = 0
+
+    def touch(self):
+        self.center_y: -self.parent.height*2
+
+    def move(self):
+        self.t +=1/60
+        self.pos[0] = self.pos[0] + int(5*(0.5-np.sin(self.t)))
+
+
+class TA(Widget):
     pass
 
-class Cours(Widget):
-    type = ['TD', 'TA', 'CM']
+class CM(Widget):
     pass
 
 class ControleContinu(Widget):
     pass
 
-class ValidationGame(Widget):
+class TopDownShooterGame(Widget):
 
     tir = ObjectProperty(None)
     eleve = ObjectProperty(None)
-
-
-    def test_tir(self):
-        self.tir.center = - self.top
+    td = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        super(PongGame, self).__init__(**kwargs)
+        super(TopDownShooterGame, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
@@ -46,6 +60,7 @@ class ValidationGame(Widget):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+
         if keycode[1] == 'd':
             self.eleve.center_x += 10
         elif keycode[1] == 'q':
@@ -54,20 +69,22 @@ class ValidationGame(Widget):
             self.eleve.center_x += 10
         elif keycode[1] == 'left':
             self.eleve.center_x -= 10
-        elif keycode[1] == 'left':
-            self.eleve.center_x -= 10
+        elif keycode[1] == 'spacebar':
+            self.tir.center_x = self.eleve.center_x
+            self.tir.center_y = self.eleve.center_y
         return True
 
     def update(self, dt):
         self.tir.move()
+        self.td.move()
 
 
-class ValidationApp(App):
+
+class TopDownShooterApp(App):
     def build(self):
-        game = ValidationGame()
-        game.test_tir()
+        game = TopDownShooterGame()
         Clock.schedule_interval(game.update, 1.0/60.0)
         return game
 
 if __name__ == '__main__':
-    ValidationApp().run()
+    TopDownShooterApp().run()
