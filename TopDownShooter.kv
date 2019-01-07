@@ -1,0 +1,50 @@
+#:kivy 1.10.1
+
+<Tir>:
+    size: 5, 15
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size
+
+<Eleve>:
+
+    size : 30, 10
+    canvas:
+        Ellipse:
+            segments: 3
+            pos: self.pos
+            size: self.size
+
+<TD>:
+    canvas:
+        Rectangle:
+            size: 30,30
+            pos: self.pos
+
+
+<TopDownShooterGame>:
+
+    tir: tir
+    eleve: eleve
+    td: td
+
+    Label:
+        font_size: 20
+        right: root.right - 5
+        top: root.top - 3
+        text: "Score : "+str(eleve.score)
+
+    Eleve:
+        id: eleve
+
+        center_x: self.parent.center_x
+
+    TD:
+        id: td
+        center_x: self.parent.center_x
+        center_y: self.parent.center_y
+
+    Tir:
+        id: tir
+        center_x: -self.parent.width*2
