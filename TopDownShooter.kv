@@ -7,7 +7,7 @@
             pos: self.pos
             size: self.size
 
-<Player>:
+<Joueur>:
 
     size : 30, 10
     canvas:
@@ -16,7 +16,7 @@
             pos: self.pos
             size: self.size
 
-<TD>:
+<EnemieA>:
     canvas:
         Rectangle:
             size: 30,30
@@ -26,22 +26,21 @@
 <TopDownShooterGame>:
 
     tir: tir
-    player: player
-    td: td
+    joueur: joueur
+    enemiea: enemiea
 
     Label:
         font_size: 20
         right: root.right - 5
         top: root.top - 3
-        text: "Score : "+str(player.score)
+        text: "Score : "+str(joueur.score)
 
-    Player:
-        id: player
-
+    Joueur:
+        id: joueur
         center_x: self.parent.center_x
 
-    TD:
-        id: td
+    EnemieA:
+        id: enemiea
         center_x: self.parent.center_x
         top: root.top
 

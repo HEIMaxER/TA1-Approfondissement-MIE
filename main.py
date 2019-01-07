@@ -17,18 +17,18 @@ class Tir(Widget):
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
 
-    def kill(self, target, eleve):
+    def kill(self, target, player):
         if self.collide_widget(target):
             target.velocity_y *= 1.05
-            eleve.score += target.value
+            player.score += target.value
             target.pos[1]+= 300
 
-class Player(Widget):
+class Joueur(Widget):
     score = NumericProperty(0)
 
-class TD(Widget):
+class EnemieA(Widget):
     t = 0
-    velocity_y = NumericProperty(0.03)
+    velocity_y = NumericProperty(0.1)
     value =  100
     real_y = 0
 
@@ -54,8 +54,8 @@ class ControleContinu(Widget):
 class TopDownShooterGame(Widget):
 
     tir = ObjectProperty(None)
-    player = ObjectProperty(None)
-    td = ObjectProperty(None)
+    joueur = ObjectProperty(None)
+    enemiea = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(TopDownShooterGame, self).__init__(**kwargs)
@@ -69,22 +69,22 @@ class TopDownShooterGame(Widget):
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
 
         if keycode[1] == 'd':
-            self.player.center_x += 10
+            self.joueur.center_x += 10
         elif keycode[1] == 'q':
-            self.player.center_x -= 10
+            self.joueur.center_x -= 10
         elif keycode[1] == 'right':
-            self.player.center_x += 10
+            self.joueur.center_x += 10
         elif keycode[1] == 'left':
-            self.player.center_x -= 10
+            self.joueur.center_x -= 10
         elif keycode[1] == 'spacebar':
-            self.tir.center_x = self.player.center_x
-            self.tir.center_y = self.player.center_y
+            self.tir.center_x = self.joueur.center_x
+            self.tir.center_y = self.joueur.center_y
         return True
 
     def update(self, dt):
         self.tir.move()
-        self.tir.kill(self.td, self.player)
-        self.td.move()
+        self.enemiea.move()
+        self.tir.kill(self.enemiea, self.joueur)
 
 
 
