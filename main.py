@@ -10,7 +10,7 @@ import random as rd
 
 
 
-class Tir(Widget):
+class Tir1(Widget):
 
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(7)
@@ -19,11 +19,36 @@ class Tir(Widget):
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
 
-    def kill(self, target, player):
+    def killA(self, target, player):
         if self.collide_widget(target):
             target.velocity_y *= 1.05
             player.score += target.value
-            target.pos[1]+= 300
+            target.pos[1] = 700
+
+    def killB(self, target, player):
+        if self.collide_widget(target):
+            player.score += target.value
+            target.move()
+
+class Tir2(Widget):
+
+    velocity_x = NumericProperty(0)
+    velocity_y = NumericProperty(7)
+    velocity = ReferenceListProperty(velocity_x, velocity_y)
+
+    def move(self):
+        self.pos = Vector(*self.velocity) + self.pos
+
+    def killA(self, target, player):
+        if self.collide_widget(target):
+            target.velocity_y *= 1.05
+            player.score += target.value
+            target.pos[1] = 700
+
+    def killB(self, target, player):
+        if self.collide_widget(target):
+            player.score += target.value
+            target.move()
 
 class Joueur(Widget):
     score = NumericProperty(0)
@@ -43,6 +68,7 @@ class EnemieA(Widget):
         self.t+=1
         self.real_y = self.pos[1]-self.velocity_y
         self.pos[1] = int(self.real_y)
+        print(self.pos)
         self.pos[0] = self.pos[0]+int(10*(np.cos(((self.t%180)/180)*2*np.pi)))
 
 
@@ -50,34 +76,33 @@ class EnemieA(Widget):
 
 class EnemieB(Widget):
     t = 0
-    velocity_y = NumericProperty(0.1)
     value = 100
-    real_y = 0
 
     def move(self):
         self.t += 1
-        self.real_y = self.pos[1] - self.velocity_y
-        self.pos[1] = int(self.real_y)
-        self.pos[0] = self.pos[0] + int(10 * (np.cos(((self.t % 180) / 180) * 2 * np.pi)))
+        self.pos[1] = rd.randint(0, 600)
+        self.pos[0] = rd.randint(200,600)
 
 
 class CM(Widget):
     pass
 
-class ControleContinu(Widget):
-    pass
 
 class TopDownShooterGame(Widget):
 
-    tir = ObjectProperty(None)
+    tir1 = ObjectProperty(None)
+    tir2 = ObjectProperty(None)
     joueur = ObjectProperty(None)
     enemiea = ObjectProperty(None)
     enemieb = ObjectProperty(None)
+    compteur_tir = 0
 
     def __init__(self, **kwargs):
         super(TopDownShooterGame, self).__init__(**kwargs)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
+        self.My_Clock = Clock
+        self.My_Clock.schedule_interval(self.update, 1 / 60.)
 
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
@@ -93,18 +118,30 @@ class TopDownShooterGame(Widget):
         elif keycode[1] == 'left':
             self.joueur.center_x -= 10
         elif keycode[1] == 'spacebar':
-            self.tir.center_x = self.joueur.center_x
-            self.tir.center_y = self.joueur.center_y
+            if int(self.joueur.temps) != 0:
+                if self.compteur_tir ==0:
+                    self.tir1.center_x = self.joueur.center_x
+                    self.tir1.center_y = self.joueur.center_y
+                    self.compteur_tir = 1
+                else:
+                    self.tir2.center_x = self.joueur.center_x
+                    self.tir2.center_y = self.joueur.center_y
+                    self.compteur_tir = 0
         elif keycode[1] == 'escape':
             App.get_running_app().stop()
         return True
 
     def update(self, dt):
-        self.tir.move()
+        self.tir1.move()
+        self.tir2.move()
         self.enemiea.move()
-        self.tir.kill(self.enemiea, self.joueur)
-        self.tir.kill(self.enemieb, self.joueur)
+        self.tir1.killA(self.enemiea, self.joueur)
+        self.tir2.killA(self.enemiea, self.joueur)
+        self.tir1.killB(self.enemieb, self.joueur)
+        self.tir2.killB(self.enemieb, self.joueur)
         self.joueur.time(dt)
+        if int(self.joueur.temps) == 0:
+            self.My_Clock.unschedule(self.update)
 
 
 
@@ -113,9 +150,8 @@ class TopDownShooterApp(App):
     dt = 1.0/60.0
     def build(self):
         game = TopDownShooterGame()
-        Clock.schedule_interval(game.update, self.dt)
         return game
 
 if __name__ == '__main__':
-    Window.fullscreen = True
+    #Window.fullscreen = True
     TopDownShooterApp().run()

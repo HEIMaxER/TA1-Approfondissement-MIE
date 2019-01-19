@@ -1,38 +1,50 @@
 #:kivy 1.10.1
 
-<Tir>:
-    size: 15, 45
+<Tir1>:
+    size: 45, 45
     canvas:
-        Ellipse:
-            pos: self.pos
+        Rectangle:
             size: self.size
+            pos: self.pos
+            source: 'Bush.jpg'
+
+<Tir2>:
+    size: 45, 45
+    canvas:
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'Bush.jpg'
+
 
 <Joueur>:
 
-    size : 80, 40
+    size : 80, 80
     canvas:
-        Ellipse:
-            segments: 3
-            pos: self.pos
+        Rectangle:
             size: self.size
+            pos: self.pos
+            source: 'Joueur.PNG'
 
 <EnemieA>
     canvas:
         Rectangle:
             size: 100,60
             pos: self.pos
-            source: 'TA.PNG'
+            source: 'TP.PNG'
 
 <EnemieB>
     canvas:
         Rectangle:
             size: 100,60
             pos: self.pos
+            source: 'Langue.PNG'
 
 
 <TopDownShooterGame>:
 
-    tir: tir
+    tir1: tir1
+    tir2: tir2
     joueur: joueur
     enemiea: enemiea
     enemieb: enemieb
@@ -46,13 +58,13 @@
     Label:
         font_size: 20
         halign: 'left'
-        top: root.top - 3
+        top: root.top
         text: "Time : "+str(int(joueur.temps))
 
     Label:
         font_size: 20
         right: root.right - 5
-        top: root.top - 3
+        top: root.top
         text: "Score : "+str(joueur.score)
 
     Joueur:
@@ -69,6 +81,10 @@
         center_x: self.parent.center_x
         top: root.top
 
-    Tir:
-        id: tir
+    Tir1:
+        id: tir1
+        center_x: -self.parent.width*2
+
+    Tir2:
+        id: tir2
         center_x: -self.parent.width*2
