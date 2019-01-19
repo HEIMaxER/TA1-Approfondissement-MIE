@@ -67,7 +67,6 @@ class TopDownShooterGame(Widget):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-
         if keycode[1] == 'd':
             self.joueur.center_x += 10
         elif keycode[1] == 'q':
@@ -79,6 +78,8 @@ class TopDownShooterGame(Widget):
         elif keycode[1] == 'spacebar':
             self.tir.center_x = self.joueur.center_x
             self.tir.center_y = self.joueur.center_y
+        elif keycode[1] == 'escape':
+            App.get_running_app().stop()
         return True
 
     def update(self, dt):
