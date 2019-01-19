@@ -8,6 +8,8 @@ from kivy.clock import Clock
 import numpy as np
 import random as rd
 
+
+
 class Tir(Widget):
 
     velocity_x = NumericProperty(0)
@@ -25,6 +27,10 @@ class Tir(Widget):
 
 class Joueur(Widget):
     score = NumericProperty(0)
+    temps = NumericProperty(100)
+
+    def time(self,dt):
+        self.temps -= dt
 
 class EnemieA(Widget):
     t = 0
@@ -38,12 +44,22 @@ class EnemieA(Widget):
         self.real_y = self.pos[1]-self.velocity_y
         self.pos[1] = int(self.real_y)
         self.pos[0] = self.pos[0]+int(10*(np.cos(((self.t%180)/180)*2*np.pi)))
-        pass
 
 
 
-class TA(Widget):
-    pass
+
+class EnemieB(Widget):
+    t = 0
+    velocity_y = NumericProperty(0.1)
+    value = 100
+    real_y = 0
+
+    def move(self):
+        self.t += 1
+        self.real_y = self.pos[1] - self.velocity_y
+        self.pos[1] = int(self.real_y)
+        self.pos[0] = self.pos[0] + int(10 * (np.cos(((self.t % 180) / 180) * 2 * np.pi)))
+
 
 class CM(Widget):
     pass
@@ -56,6 +72,7 @@ class TopDownShooterGame(Widget):
     tir = ObjectProperty(None)
     joueur = ObjectProperty(None)
     enemiea = ObjectProperty(None)
+    enemieb = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(TopDownShooterGame, self).__init__(**kwargs)
@@ -86,14 +103,19 @@ class TopDownShooterGame(Widget):
         self.tir.move()
         self.enemiea.move()
         self.tir.kill(self.enemiea, self.joueur)
+        self.tir.kill(self.enemieb, self.joueur)
+        self.joueur.time(dt)
 
 
 
 class TopDownShooterApp(App):
+
+    dt = 1.0/60.0
     def build(self):
         game = TopDownShooterGame()
-        Clock.schedule_interval(game.update, 1.0/60.0)
+        Clock.schedule_interval(game.update, self.dt)
         return game
 
 if __name__ == '__main__':
+    Window.fullscreen = True
     TopDownShooterApp().run()

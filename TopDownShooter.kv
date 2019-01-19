@@ -9,17 +9,24 @@
 
 <Joueur>:
 
-    size : 90, 50
+    size : 80, 40
     canvas:
         Ellipse:
             segments: 3
             pos: self.pos
             size: self.size
 
-<EnemieA>:
+<EnemieA>
     canvas:
         Rectangle:
-            size: 30,30
+            size: 100,60
+            pos: self.pos
+            source: 'TA.PNG'
+
+<EnemieB>
+    canvas:
+        Rectangle:
+            size: 100,60
             pos: self.pos
 
 
@@ -28,6 +35,19 @@
     tir: tir
     joueur: joueur
     enemiea: enemiea
+    enemieb: enemieb
+
+    canvas:
+        Rectangle:
+            size: self.size
+            pos: self.pos
+            source: 'Serenade.PNG'
+
+    Label:
+        font_size: 20
+        halign: 'left'
+        top: root.top - 3
+        text: "Time : "+str(int(joueur.temps))
 
     Label:
         font_size: 20
@@ -41,6 +61,11 @@
 
     EnemieA:
         id: enemiea
+        center_x: self.parent.center_x
+        top: root.top
+
+    EnemieB:
+        id: enemieb
         center_x: self.parent.center_x
         top: root.top
 
