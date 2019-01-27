@@ -43,11 +43,13 @@ class Tir2(Widget):
         if self.collide_widget(target):
             target.velocity_y *= 1.05
             player.score += target.value
+            player.temps += 3
             target.pos[1] = 700
 
     def killB(self, target, player):
         if self.collide_widget(target):
             player.score += target.value
+            player.temps += 1
             target.move()
 
 class Joueur(Widget):
@@ -68,7 +70,6 @@ class EnemieA(Widget):
         self.t+=1
         self.real_y = self.pos[1]-self.velocity_y
         self.pos[1] = int(self.real_y)
-        print(self.pos)
         self.pos[0] = self.pos[0]+int(10*(np.cos(((self.t%180)/180)*2*np.pi)))
 
 
@@ -80,11 +81,14 @@ class EnemieB(Widget):
 
     def move(self):
         self.t += 1
-        self.pos[1] = rd.randint(0, 600)
-        self.pos[0] = rd.randint(200,600)
+        self.pos[1] = rd.randint(0, 400)
+        self.pos[0] = rd.randint(0,600)
 
 
-class CM(Widget):
+class Conglaturation(Widget):
+    def affiche(self,x,y):
+        self.center_x = x
+        self.center_y = y
     pass
 
 
@@ -95,6 +99,7 @@ class TopDownShooterGame(Widget):
     joueur = ObjectProperty(None)
     enemiea = ObjectProperty(None)
     enemieb = ObjectProperty(None)
+    conglaturation =  ObjectProperty(None)
     compteur_tir = 0
 
     def __init__(self, **kwargs):
@@ -109,16 +114,16 @@ class TopDownShooterGame(Widget):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == 'd':
-            self.joueur.center_x += 10
-        elif keycode[1] == 'q':
-            self.joueur.center_x -= 10
-        elif keycode[1] == 'right':
-            self.joueur.center_x += 10
-        elif keycode[1] == 'left':
-            self.joueur.center_x -= 10
-        elif keycode[1] == 'spacebar':
-            if int(self.joueur.temps) != 0:
+        if int(self.joueur.temps) >= 0:
+            if keycode[1] == 'd':
+                self.joueur.center_x += 10
+            elif keycode[1] == 'q':
+                self.joueur.center_x -= 10
+            elif keycode[1] == 'right':
+                self.joueur.center_x += 10
+            elif keycode[1] == 'left':
+                self.joueur.center_x -= 10
+            elif keycode[1] == 'spacebar':
                 if self.compteur_tir ==0:
                     self.tir1.center_x = self.joueur.center_x
                     self.tir1.center_y = self.joueur.center_y
@@ -140,14 +145,17 @@ class TopDownShooterGame(Widget):
         self.tir1.killB(self.enemieb, self.joueur)
         self.tir2.killB(self.enemieb, self.joueur)
         self.joueur.time(dt)
-        if int(self.joueur.temps) == 0:
+        if int(self.joueur.temps) <= 0:
+            self.conglaturation.affiche(0,0)
             self.My_Clock.unschedule(self.update)
+        if self.enemiea.pos[1] <= 0:
+            self.enemiea.pos[1] = 700
+            self.joueur.temps -= 10
 
 
 
 class TopDownShooterApp(App):
 
-    dt = 1.0/60.0
     def build(self):
         game = TopDownShooterGame()
         return game

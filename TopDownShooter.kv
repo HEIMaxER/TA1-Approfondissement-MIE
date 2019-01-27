@@ -8,6 +8,15 @@
             pos: self.pos
             source: 'Bush.jpg'
 
+
+
+<Conglaturation>:
+    canvas:
+        Rectangle:
+            size: 400, 210
+            pos: -1000, -1000
+            source: 'Conglaturation.PNG'
+
 <Tir2>:
     size: 45, 45
     canvas:
@@ -48,6 +57,7 @@
     joueur: joueur
     enemiea: enemiea
     enemieb: enemieb
+    conglaturation: conglaturation
 
     canvas:
         Rectangle:
@@ -88,3 +98,8 @@
     Tir2:
         id: tir2
         center_x: -self.parent.width*2
+
+    Conglaturation:
+        id: conglaturation
+        center_x: self.parent.center_x
+        center_y: self.parent.center_y
